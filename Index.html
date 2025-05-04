@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jogo da Velha com Dificuldade</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      background-color: #fafafa;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    .status {
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+    select {
+      margin-bottom: 10px;
+      padding: 5px;
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 5px;
+    }
+    .cell {
+      width: 100px;
+      height: 100px;
+      background-color: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      cursor: pointer;
+    }
+    .cell:hover {
+      background-color: #d0d0d0;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Jogo da Velha</h1>
+  <div class="status" id="status">Vez do Jogador X</div>
+  <select id="difficulty">
+    <option value="easy">Fácil</option>
+    <option value="medium">Médio</option>
+    <option value="hard">Difícil</option>
+  </select>
+  <div class="board" id="board">
+    <div class="cell" data-index="0"></div>
+    <div class="cell" data-index="1"></div>
+    <div class="cell" data-index="2"></div>
+    <div class="cell" data-index="3"></div>
+    <div class="cell" data-index="4"></div>
+    <div class="cell" data-index="5"></div>
+    <div class="cell" data-index="6"></div>
+    <div class="cell" data-index="7"></div>
+    <div class="cell" data-index="8"></div>
+  </div>
+  <button onclick="resetGame()">Reiniciar</button>
+
+  <script>
+    const cells = document.querySelectorAll(".cell");
+    const statusText = document.getElementById("status");
+    const difficultySelect = document.getElementById("difficulty");
+    let board = ["", "", "", "", "", "", "", "", ""];
+    let currentPlayer = "X";
+    let gameOver = false;
+
+    const winPatterns = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+
+    function checkWinner(b) {
+      for (const [a, b1, c] of winPatterns) {
+        if (b[a] && b[a] === b[b1] && b[a] === b[c]) return b[a];
+      }
+      return b.includes("") ? null : "Empate";
+    }
+
+    function updateStatus() {
+      const winner = checkWinner(board);
+      if (winner === "X" || winner === "O") {
+        statusText.textContent = `Jogador ${winner} venceu!`;
+        gameOver = true;
+      } else if (winner === "Empate") {
+        statusText.textContent = "Empate!";
+        gameOver = true;
+      } else {
+        statusText.textContent = `Vez do Jogador ${currentPlayer}`;
+      }
+    }
+
+    function playerMove(index) {
+      if (gameOver || board[index]) return;
+      board[index] = currentPlayer;
+      cells[index].textContent = currentPlayer;
+      updateStatus();
+      if (!gameOver) {
+        currentPlayer = "O";
+        setTimeout(botMove, 300);
+      }
+    }
+
+    function botMove() {
+      let level = difficultySelect.value;
+      let move;
+      if (level === "easy") {
+        move = randomMove();
+      } else if (level === "medium") {
+        move = Math.random() < 0.7 ? bestMove() : randomMove();
+      } else {
+        move = bestMove();
+      }
+
+      board[move] = "O";
+      cells[move].textContent = "O";
+      updateStatus();
+      if (!gameOver) currentPlayer = "X";
+    }
+
+    function randomMove() {
+      const options = board.map((v, i) => v === "" ? i : null).filter(v => v !== null);
+      return options[Math.floor(Math.random() * options.length)];
+    }
+
+    function bestMove() {
+      let bestScore = -Infinity;
+      let move = -1;
+      for (let i = 0; i < 9; i++) {
+        if (board[i] === "") {
+          board[i] = "O";
+          let score = minimax(board, 0, false);
+          board[i] = "";
+          if (score > bestScore) {
+            bestScore = score;
+            move = i;
+          }
+        }
+      }
+      return move;
+    }
+
+    function minimax(b, depth, isMax) {
+      let result = checkWinner(b);
+      if (result === "O") return 10 - depth;
+      if (result === "X") return depth - 10;
+      if (result === "Empate") return 0;
+
+      if (isMax) {
+        let best = -Infinity;
+        for (let i = 0; i < 9; i++) {
+          if (b[i] === "") {
+            b[i] = "O";
+            best = Math.max(best, minimax(b, depth + 1, false));
+            b[i] = "";
+          }
+        }
+        return best;
+      } else {
+        let best = Infinity;
+        for (let i = 0; i < 9; i++) {
+          if (b[i] === "") {
+            b[i] = "X";
+            best = Math.min(best, minimax(b, depth + 1, true));
+            b[i] = "";
+          }
+        }
+        return best;
+      }
+    }
+
+    cells.forEach((cell, i) => {
+      cell.addEventListener("click", () => {
+        if (currentPlayer === "X") playerMove(i);
+      });
+    });
+
+    function resetGame() {
+      board = ["", "", "", "", "", "", "", "", ""];
+      currentPlayer = "X";
+      gameOver = false;
+      statusText.textContent = "Vez do Jogador X";
+      cells.forEach(cell => cell.textContent = "");
+    }
+  </script>
+</body>
+</html>
