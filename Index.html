@@ -1,203 +1,82 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Jogo da Velha com Dificuldade</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      height: 100vh;
-      margin: 0;
-      background-color: #fafafa;
-    }
-    h1 {
-      margin-bottom: 10px;
-    }
-    .status {
-      margin-bottom: 10px;
-      font-size: 1.2rem;
-    }
-    select {
-      margin-bottom: 10px;
-      padding: 5px;
-    }
-    .board {
-      display: grid;
-      grid-template-columns: repeat(3, 100px);
-      grid-template-rows: repeat(3, 100px);
-      gap: 5px;
-    }
-    .cell {
-      width: 100px;
-      height: 100px;
-      background-color: #e0e0e0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.5rem;
-      cursor: pointer;
-    }
-    .cell:hover {
-      background-color: #d0d0d0;
-    }
-    button {
-      margin-top: 15px;
-      padding: 10px 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidade – Jogo da Velha</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+    </style>
 </head>
 <body>
-  <h1>Jogo da Velha</h1>
-  <div class="status" id="status">Vez do Jogador X</div>
-  <select id="difficulty">
-    <option value="easy">Fácil</option>
-    <option value="medium">Médio</option>
-    <option value="hard">Difícil</option>
-  </select>
-  <div class="board" id="board">
-    <div class="cell" data-index="0"></div>
-    <div class="cell" data-index="1"></div>
-    <div class="cell" data-index="2"></div>
-    <div class="cell" data-index="3"></div>
-    <div class="cell" data-index="4"></div>
-    <div class="cell" data-index="5"></div>
-    <div class="cell" data-index="6"></div>
-    <div class="cell" data-index="7"></div>
-    <div class="cell" data-index="8"></div>
-  </div>
-  <button onclick="resetGame()">Reiniciar</button>
+    <h1>Política de Privacidade – Jogo da Velha</h1>
+    <p><strong>Última atualização:</strong> 15 de maio de 2025</p>
 
-  <script>
-    const cells = document.querySelectorAll(".cell");
-    const statusText = document.getElementById("status");
-    const difficultySelect = document.getElementById("difficulty");
-    let board = ["", "", "", "", "", "", "", "", ""];
-    let currentPlayer = "X";
-    let gameOver = false;
+    <p>Bem-vindo ao Jogo da Velha! Esta Política de Privacidade descreve como coletamos, usamos e protegemos suas informações ao usar nosso aplicativo.</p>
 
-    const winPatterns = [
-      [0, 1, 2], [3, 4, 5], [6, 7, 8],
-      [0, 3, 6], [1, 4, 7], [2, 5, 8],
-      [0, 4, 8], [2, 4, 6]
-    ];
+    <h2>1. Informações que Coletamos</h2>
+    <p>Nosso aplicativo utiliza os serviços do Firebase, fornecido pela Google, para autenticação e funcionalidades online. Coletamos os seguintes dados:</p>
+    <ul>
+        <li><strong>Endereço de e-mail (opcional):</strong> usado para login e identificação no modo online.</li>
+        <li><strong>Identificador único do Firebase (UID):</strong> utilizado para distinguir jogadores e associá-los às partidas no banco de dados.</li>
+        <li><strong>Dados de Jogo:</strong> como jogadas, status da sala, pontuação e nome do jogador.</li>
+    </ul>
+    <p>Não coletamos informações sensíveis, como nome completo, CPF, localização exata, contatos ou arquivos pessoais.</p>
 
-    function checkWinner(b) {
-      for (const [a, b1, c] of winPatterns) {
-        if (b[a] && b[a] === b[b1] && b[a] === b[c]) return b[a];
-      }
-      return b.includes("") ? null : "Empate";
-    }
+    <h2>2. Como Usamos as Informações</h2>
+    <p>As informações são utilizadas para:</p>
+    <ul>
+        <li>Permitir login e acesso às salas online.</li>
+        <li>Sincronizar as jogadas em tempo real entre os jogadores.</li>
+        <li>Exibir o nome e a pontuação dos jogadores durante o jogo.</li>
+        <li>Melhorar a experiência e estabilidade do app.</li>
+    </ul>
 
-    function updateStatus() {
-      const winner = checkWinner(board);
-      if (winner === "X" || winner === "O") {
-        statusText.textContent = `Jogador ${winner} venceu!`;
-        gameOver = true;
-      } else if (winner === "Empate") {
-        statusText.textContent = "Empate!";
-        gameOver = true;
-      } else {
-        statusText.textContent = `Vez do Jogador ${currentPlayer}`;
-      }
-    }
+    <h2>3. Compartilhamento de Dados</h2>
+    <p>Não compartilhamos suas informações com terceiros, exceto:</p>
+    <ul>
+        <li>Quando exigido por lei;</li>
+        <li>Para proteger a integridade e segurança do aplicativo;</li>
+        <li>Com os serviços do Firebase, que armazenam e processam os dados de forma segura.</li>
+    </ul>
 
-    function playerMove(index) {
-      if (gameOver || board[index]) return;
-      board[index] = currentPlayer;
-      cells[index].textContent = currentPlayer;
-      updateStatus();
-      if (!gameOver) {
-        currentPlayer = "O";
-        setTimeout(botMove, 300);
-      }
-    }
+    <h2>4. Armazenamento e Segurança</h2>
+    <p>Os dados são armazenados no Firebase Realtime Database, com acesso controlado por regras de segurança e criptografia. Empregamos medidas técnicas para proteger suas informações contra acesso não autorizado.</p>
 
-    function botMove() {
-      let level = difficultySelect.value;
-      let move;
-      if (level === "easy") {
-        move = randomMove();
-      } else if (level === "medium") {
-        move = Math.random() < 0.7 ? bestMove() : randomMove();
-      } else {
-        move = bestMove();
-      }
+    <h2>5. Direitos do Usuário</h2>
+    <p>Você pode:</p>
+    <ul>
+        <li>Solicitar a exclusão dos seus dados enviando um e-mail para: <a href="mailto:seu-email@exemplo.com">seu-email@exemplo.com</a>.</li>
+        <li>Desinstalar o app a qualquer momento para encerrar a coleta de informações.</li>
+    </ul>
 
-      board[move] = "O";
-      cells[move].textContent = "O";
-      updateStatus();
-      if (!gameOver) currentPlayer = "X";
-    }
+    <h2>6. Serviços de Terceiros</h2>
+    <p>Nosso app utiliza os seguintes serviços de terceiros:</p>
+    <ul>
+        <li>Firebase Authentication</li>
+        <li>Firebase Realtime Database</li>
+    </ul>
+    <p>Você pode revisar a política de privacidade do Firebase aqui: <a href="https://firebase.google.com/support/privacy" target="_blank">https://firebase.google.com/support/privacy</a></p>
 
-    function randomMove() {
-      const options = board.map((v, i) => v === "" ? i : null).filter(v => v !== null);
-      return options[Math.floor(Math.random() * options.length)];
-    }
+    <h2>7. Crianças</h2>
+    <p>Nosso aplicativo é destinado a todas as idades. Se você é pai ou responsável e acredita que seu filho nos forneceu informações pessoais indevidamente, entre em contato para que possamos removê-las.</p>
 
-    function bestMove() {
-      let bestScore = -Infinity;
-      let move = -1;
-      for (let i = 0; i < 9; i++) {
-        if (board[i] === "") {
-          board[i] = "O";
-          let score = minimax(board, 0, false);
-          board[i] = "";
-          if (score > bestScore) {
-            bestScore = score;
-            move = i;
-          }
-        }
-      }
-      return move;
-    }
+    <h2>8. Alterações a Esta Política</h2>
+    <p>Podemos atualizar esta Política de Privacidade periodicamente. Recomendamos que revise esta página ocasionalmente. Notificaremos você em caso de alterações significativas.</p>
 
-    function minimax(b, depth, isMax) {
-      let result = checkWinner(b);
-      if (result === "O") return 10 - depth;
-      if (result === "X") return depth - 10;
-      if (result === "Empate") return 0;
-
-      if (isMax) {
-        let best = -Infinity;
-        for (let i = 0; i < 9; i++) {
-          if (b[i] === "") {
-            b[i] = "O";
-            best = Math.max(best, minimax(b, depth + 1, false));
-            b[i] = "";
-          }
-        }
-        return best;
-      } else {
-        let best = Infinity;
-        for (let i = 0; i < 9; i++) {
-          if (b[i] === "") {
-            b[i] = "X";
-            best = Math.min(best, minimax(b, depth + 1, true));
-            b[i] = "";
-          }
-        }
-        return best;
-      }
-    }
-
-    cells.forEach((cell, i) => {
-      cell.addEventListener("click", () => {
-        if (currentPlayer === "X") playerMove(i);
-      });
-    });
-
-    function resetGame() {
-      board = ["", "", "", "", "", "", "", "", ""];
-      currentPlayer = "X";
-      gameOver = false;
-      statusText.textContent = "Vez do Jogador X";
-      cells.forEach(cell => cell.textContent = "");
-    }
-  </script>
+    <h2>9. Contato</h2>
+    <p>Se tiver dúvidas sobre esta Política de Privacidade, entre em contato:</p>
+    <p><strong>📧 Email:</strong> <a href="mailto:seu-email@exemplo.com">seu-email@exemplo.com</a></p>
 </body>
 </html>
